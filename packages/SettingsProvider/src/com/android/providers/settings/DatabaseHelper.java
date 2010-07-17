@@ -712,7 +712,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                  if (stmt != null) stmt.close();
              }
             upgradeVersion = 56;
+
+            /* This upgrade is for the Wimax framework */
+            db.beginTransaction();
+            try {
+                //Add the wimax radio to the airplane mode radios list
+                db.execSQL("DELETE FROM system WHERE name='"
+                        + Settings.System.AIRPLANE_MODE_RADIOS + "'");
+                db.execSQL("INSERT INTO system ('name', 'value') values ('"
+                        + Settings.System.AIRPLANE_MODE_RADIOS + "', '"
+                        + mContext.getResources().getString(R.string.def_airplane_mode_radios) + "')");
+                db.execSQL("INSERT INTO secure ('name', 'value') values ('"
+                        + Settings.Secure.WIMAX_ON + "', '" +
+                        (mContext.getResources().getBoolean(R.bool.def_wimax_on) ? "1" : "0") + "')");
+                db.execSQL("INSERT INTO secure ('name', 'value') values ('"
+                        + Settings.Secure.WIMAX_AUTO_CONNECT_ON + "', '" +
+                        (mContext.getResources().getBoolean(R.bool.def_wimax_auto_connect_on) ? "1" : "0") + "')");
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
         }
+
         // *** Remember to update DATABASE_VERSION above!
 
         if (upgradeVersion != currentVersion) {
@@ -1142,6 +1163,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             loadSetting(stmt, Settings.Secure.PREFERRED_CDMA_SUBSCRIPTION,
                     RILConstants.PREFERRED_CDMA_SUBSCRIPTION);
     
+            // WIMAX off, auto connect off
+            loadBooleanSetting(stmt, Settings.Secure.WIMAX_ON, R.bool.def_wimax_on);
+            loadBooleanSetting(stmt, Settings.Secure.WIMAX_AUTO_CONNECT_ON, 
+                    R.bool.def_wimax_auto_connect_on);
+
             // Don't do this.  The SystemServer will initialize ADB_ENABLED from a
             // persistent system property instead.
             //loadSetting(stmt, Settings.Secure.ADB_ENABLED, 0);

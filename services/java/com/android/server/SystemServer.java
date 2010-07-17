@@ -276,6 +276,13 @@ class ServerThread extends Thread {
             }
 
             try {
+                Slog.i(TAG, "Starting Wimax Service.");
+                ServiceManager.addService(Context.WIMAX_SERVICE, new WimaxService(context));
+            } catch (Throwable e) {
+                Slog.e(TAG, "Failure starting Wimax Service", e);
+            }
+
+            try {
                 Slog.i(TAG, "Throttle Service");
                 throttle = new ThrottleService(context);
                 ServiceManager.addService(

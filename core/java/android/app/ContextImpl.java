@@ -72,6 +72,8 @@ import android.net.IThrottleManager;
 import android.net.Uri;
 import android.net.wifi.IWifiManager;
 import android.net.wifi.WifiManager;
+import android.net.wimax.IWimaxManager;
+import android.net.wimax.WimaxManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.DropBoxManager;
@@ -168,6 +170,7 @@ class ContextImpl extends Context {
     private static ConnectivityManager sConnectivityManager;
     private static ThrottleManager sThrottleManager;
     private static WifiManager sWifiManager;
+    private static WimaxManager sWimaxManager;
     private static LocationManager sLocationManager;
     private static final HashMap<File, SharedPreferencesImpl> sSharedPrefs =
             new HashMap<File, SharedPreferencesImpl>();
@@ -936,6 +939,8 @@ class ContextImpl extends Context {
             return getThrottleManager();
         } else if (WIFI_SERVICE.equals(name)) {
             return getWifiManager();
+        } else if (WIMAX_SERVICE.equals(name)) {
+            return getWimaxManager();
         } else if (NOTIFICATION_SERVICE.equals(name)) {
             return getNotificationManager();
         } else if (KEYGUARD_SERVICE.equals(name)) {
@@ -1055,6 +1060,18 @@ class ContextImpl extends Context {
             }
         }
         return sWifiManager;
+    }
+
+    private WimaxManager getWimaxManager()
+    {
+        synchronized (sSync) {
+            if (sWimaxManager == null) {
+                IBinder b = ServiceManager.getService(WIMAX_SERVICE);
+                IWimaxManager service = IWimaxManager.Stub.asInterface(b);
+                sWimaxManager = new WimaxManager(service, mMainThread.getHandler());
+            }
+        }
+        return sWimaxManager;
     }
 
     private NotificationManager getNotificationManager() {

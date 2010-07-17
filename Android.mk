@@ -181,6 +181,7 @@ LOCAL_SRC_FILES += \
 	telephony/java/com/android/internal/telephony/IIccPhoneBook.aidl \
 	telephony/java/com/android/internal/telephony/ISms.aidl \
 	wifi/java/android/net/wifi/IWifiManager.aidl \
+	wimax/java/android/net/wimax/IWimaxManager.aidl \
 	telephony/java/com/android/internal/telephony/IExtendedNetworkService.aidl \
 	vpn/java/android/net/vpn/IVpnService.aidl \
 
@@ -262,6 +263,8 @@ aidl_files := \
 	frameworks/base/telephony/java/com/android/internal/telephony/IPhoneSubInfo.aidl \
 	frameworks/base/telephony/java/com/android/internal/telephony/ITelephony.aidl \
 	frameworks/base/vpn/java/android/net/vpn/IVpnService.aidl \
+	frameworks/base/wimax/java/android/net/wimax/IWimaxManager.aidl \
+
 
 gen := $(TARGET_OUT_COMMON_INTERMEDIATES)/framework.aidl
 $(gen): PRIVATE_SRC_FILES := $(aidl_files)
